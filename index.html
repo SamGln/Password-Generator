@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <title>Password Generator</title>
+</head>
+<body>
+    <main>
+        <h1>Password Generator</h1>
+        <h2>Générez un mot de passe sécurisé</h2>
+        <div id="blocGenerateur">
+            <input type="text" placeholder="Votre mot de passe apparaitra ici" name="caracteresGeneres" id="caracteresGeneres" readonly>
+            <i class="fa-slab-press fa-regular fa-copy"></i>
+            <i class="fa-slab-press fa-regular fa-eye"></i>
+        </div>
+
+        <div id="level">
+            <p class="lesTitles">Niveau de sécurité</p>
+            <p id="degre"></p>
+        </div>
+
+        <div>
+            <meter id="jauge" min="0" max="10" value="3"></meter>
+        </div>
+
+        <p class="lesTitles">Longeur du mot de passe</p>
+
+        <div>
+            <!-- <div id="nombreDeCaracteres">
+                <p>04 caractères</p>
+                <p>14</p>
+                <p>32 caractères</p>
+            </div> -->
+            <p id="texteCaractere"><span id="nombreDeCaracteres">04</span> caractères</p>
+            <input type="range" id="nombre" name="nombre" min="4" max="32" value="4" step="1">
+        </div>
+
+        <div id="choices">
+            <p class="lesTitles">Types de caractères</p>
+            <div id="theCheckbox">
+                <input type="checkbox" class="checkbox" name="minuscules" id="minuscules"><label for="minuscules">Minuscules (a-z)</label>
+                <input type="checkbox" class="checkbox" name="majuscules" id="majuscules"><label for="majuscules">Majuscules (A-Z)</label>
+                <input type="checkbox" class="checkbox" name="chiffres" id="chiffres"><label for="chiffres">Chiffres (0-9)</label>
+                <input type="checkbox" class="checkbox" name="symboles" id="symboles"><label for="symboles">Symboles (@#$%)</label>
+            </div>
+        </div>
+        <button id="bouton">Générer un mot de passe</button>
+        <p id="avertissement">Attention veuillez selectionner l'un des type de caractères.</p>
+
+    </main>
+</body>
+<script src="script.js"></script>
+</html>
