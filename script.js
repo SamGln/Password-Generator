@@ -3,6 +3,8 @@ const uppercaseChars    = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lowercaseChars    = "abcdefghijklmnopqrstuvwxyz";
 const numberChars       = "0123456789";
 const symbolChars       = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+let masque = true;
+
 // let caseCoche = false;
 
 // Selectionner les elements
@@ -16,6 +18,10 @@ const nbrCaracteres     = document.querySelector("#nombreDeCaracteres");
 const avertissement     = document.querySelector("#avertissement");
 const textInput         = document.querySelector("#caracteresGeneres");
 const copier            = document.querySelector("#fa-copy");
+const masquer           = document.querySelector("#fa-eye");
+
+// 
+let motDePasseTemporaire;
 
 // Masquer l'erreur
 avertissement.style.display = "none";
@@ -50,6 +56,7 @@ function generator() {
         const randomIndex = tableau[i] % chainesRecues.length;
         string += chainesRecues[randomIndex];
     }
+    motDePasseTemporaire = string;
     afficher(string);
     // indicateur(string);
 }
@@ -60,7 +67,8 @@ function afficher(motDePasse) {
 }
 
 function modifierIcone() {
-    copier.innerHTML = '<span><i class="fa-slab-press fa-regular fa-copy"></i></span>';
+    copier.innerHTML = '<i class="fa-slab-press fa-regular fa-copy"></i>';
+    masquer.innerHTML = '<i class="fa-slab-press fa-regular fa-eye"></i>'
 }
 
 async function copierMotDePasse() {
@@ -73,6 +81,20 @@ async function copierMotDePasse() {
     } 
 }
 
+function afficherMasquer() {
+    if (textInput.value === "") return;
+    if (masque) {
+        masquer.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+        masquer.style.cursor = 'pointer';
+        textInput.value = "*".repeat(textInput.value.length);
+        masque = false;
+    } else {
+        masquer.innerHTML = '<i class="fa-slab-press fa-regular fa-eye">';
+        textInput.value = motDePasseTemporaire;
+        masquer.style.cursor = 'pointer';
+        masque = true;
+    }
+}
 
 // detection des evenements
 rangeInput.addEventListener('input', actualiserValeur);
@@ -81,6 +103,7 @@ btnGenerator.addEventListener('click', () => {
     modifierIcone();
 });
 copier.addEventListener('click', copierMotDePasse);
+masquer.addEventListener('click', afficherMasquer)
 
 
 
