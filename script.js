@@ -15,28 +15,23 @@ const rangeInput        = document.querySelector("#nombre");
 const nbrCaracteres     = document.querySelector("#nombreDeCaracteres");
 const avertissement     = document.querySelector("#avertissement");
 const textInput         = document.querySelector("#caracteresGeneres");
+const copier            = document.querySelector("#fa-copy");
 
 // Masquer l'erreur
 avertissement.style.display = "none";
 
 // Les fonctions
-function categories () {
+function categories() {
     let chaines = "";
-    if (minuscules.checked) {
-        chaines += lowercaseChars;
+    if (minuscules.checked) chaines += lowercaseChars;
+    if (majuscules.checked) chaines += uppercaseChars;
+    if (chiffres.checked)   chaines += numberChars;
+    if (symboles.checked)   chaines += symbolChars;
+    if (chaines === "") {
+        chaines += uppercaseChars + lowercaseChars + symbolChars + numberChars;
+        return chaines;
     }
-    if (majuscules.checked) {
-        chaines += uppercaseChars;
-    }
-     if (chiffres.checked) {
-        chaines += numberChars;
-    }
-     if (symboles.checked) {
-        chaines += symbolChars;
-    } 
-    let caracteresRecuperes = chaines;
-    chaines = "";
-    return caracteresRecuperes;
+    return chaines;
 }
 
 function actualiserValeur() {
@@ -45,23 +40,9 @@ function actualiserValeur() {
     return Number(valeur);
 }
 
-function verifier(chainesRecues) {
-    if (chainesRecues === "") {
-        avertissement.style.display = "block";
-        textInput.value = "";
-        return true;
-    }
-    return false;
-}
-
 function generator() {
     const nbr = actualiserValeur();
     const chainesRecues = categories();
-    const verification = verifier(chainesRecues);
-    if (verification) {
-        return;
-    }
-    avertissement.style.display = "none";
     const tableau = new Uint32Array(nbr);
     let string = "";
     window.crypto.getRandomValues(tableau);
@@ -70,6 +51,7 @@ function generator() {
         string += chainesRecues[randomIndex];
     }
     afficher(string);
+    // indicateur(string);
 }
 
 function afficher(motDePasse) {
@@ -77,10 +59,28 @@ function afficher(motDePasse) {
     textInput.value = motDePasse;
 }
 
+function modifierIcone() {
+    copier.innerHTML = '<span><i class="fa-slab-press fa-regular fa-copy"></i></span>';
+}
+
+async function copierMotDePasse() {
+    try {
+        if (textInput.value === "") return;
+        await navigator.clipboard.writeText(textInput.value);
+        copier.innerHTML = '<i class="fa-solid fa-check"></i>';
+    } catch (error) {
+        console.log(error);
+    } 
+}
+
 
 // detection des evenements
 rangeInput.addEventListener('input', actualiserValeur);
-btnGenerator.addEventListener('click', generator);
+btnGenerator.addEventListener('click', () => {
+    generator();
+    modifierIcone();
+});
+copier.addEventListener('click', copierMotDePasse);
 
 
 

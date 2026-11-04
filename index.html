@@ -13,7 +13,7 @@
         <h2>Générez un mot de passe sécurisé</h2>
         <div id="blocGenerateur">
             <input type="text" placeholder="Votre mot de passe apparaitra ici" name="caracteresGeneres" id="caracteresGeneres" readonly>
-            <i class="fa-slab-press fa-regular fa-copy"></i>
+            <span id="fa-copy"><i class="fa-slab-press fa-regular fa-copy"></i></span>
             <i class="fa-slab-press fa-regular fa-eye"></i>
         </div>
 
@@ -23,6 +23,7 @@
         </div>
 
         <div>
+            <p id="indicateurSecurite">Moyen</p>
             <meter id="jauge" min="0" max="10" value="3"></meter>
         </div>
 
@@ -34,8 +35,8 @@
                 <p>14</p>
                 <p>32 caractères</p>
             </div> -->
-            <p id="texteCaractere"><span id="nombreDeCaracteres">04</span> caractères</p>
-            <input type="range" id="nombre" name="nombre" min="4" max="32" value="4" step="1">
+            <p id="texteCaractere"><span id="nombreDeCaracteres">12</span> caractères</p>
+            <input type="range" id="nombre" name="nombre" min="4" max="32" value="12" step="1">
         </div>
 
         <div id="choices">
