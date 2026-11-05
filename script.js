@@ -4,8 +4,14 @@ const lowercaseChars    = "abcdefghijklmnopqrstuvwxyz";
 const numberChars       = "0123456789";
 const symbolChars       = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 let masque = true;
+let motDePasseTemporaire;
 
-// let caseCoche = false;
+// Variables pour le localStorage
+let sauvegardeMinuscule = localStorage.getItem("minusculeStorage");
+let sauvegardeMajuscule = localStorage.getItem("majusculeStorage");
+let sauvegardeChiffre   = localStorage.getItem("chiffreStorage");
+let sauvegardeSymbole   = localStorage.getItem("symboleStorage");
+
 
 // Selectionner les elements
 const btnGenerator      = document.querySelector("button");
@@ -20,19 +26,39 @@ const textInput         = document.querySelector("#caracteresGeneres");
 const copier            = document.querySelector("#fa-copy");
 const masquer           = document.querySelector("#fa-eye");
 
-// 
-let motDePasseTemporaire;
-
-// Masquer l'erreur
-avertissement.style.display = "none";
+verifierSauvegarde();
 
 // Les fonctions
-function categories() {
+function chainageETlocalStorage() {
     let chaines = "";
-    if (minuscules.checked) chaines += lowercaseChars;
-    if (majuscules.checked) chaines += uppercaseChars;
-    if (chiffres.checked)   chaines += numberChars;
-    if (symboles.checked)   chaines += symbolChars;
+    if (minuscules.checked) {
+        chaines += lowercaseChars;
+        localStorage.setItem("minusculeStorage", "true");
+    } else {
+        localStorage.setItem("minusculeStorage", "false");
+    }
+
+    if (majuscules.checked) {
+        chaines += uppercaseChars;
+        localStorage.setItem("majusculeStorage", "true");
+    } else {
+        localStorage.setItem("majusculeStorage", "false");
+    }
+
+    if (chiffres.checked) {
+        chaines += numberChars;
+        localStorage.setItem("chiffreStorage", "true");
+    } else {
+        localStorage.setItem("chiffreStorage", "false");
+    }
+
+    if (symboles.checked) {
+        chaines += symbolChars;
+        localStorage.setItem("symboleStorage", "true");
+    } else {
+        localStorage.setItem("symboleStorage", "false");
+    }
+
     if (chaines === "") {
         chaines += uppercaseChars + lowercaseChars + symbolChars + numberChars;
         return chaines;
@@ -48,7 +74,7 @@ function actualiserValeur() {
 
 function generator() {
     const nbr = actualiserValeur();
-    const chainesRecues = categories();
+    const chainesRecues = chainageETlocalStorage();
     const tableau = new Uint32Array(nbr);
     let string = "";
     window.crypto.getRandomValues(tableau);
@@ -96,6 +122,29 @@ function afficherMasquer() {
     }
 }
 
+function verifierSauvegarde() {
+    sauvegardeMinuscule === "true" ? minuscules.checked = true : minuscules.checked = false;
+    sauvegardeMajuscule === "true" ? majuscules.checked = true : majuscules.checked = false;
+    sauvegardeChiffre   === "true" ?   chiffres.checked = true : chiffres.checked = false;
+    sauvegardeSymbole   === "true" ?   symboles.checked = true : symboles.checked = false;
+}
+
+// function sauvegarde() {
+//     if (localStorage.getItem("minusculeStorage") !== null) {
+//         conserverParamètres();
+//     } else {
+//         localStorage.setItem("minusculeStorage", true);
+//     }
+// }
+
+// function conserverParamètres() {
+//     if (localStorage.getItem("minusculeStorage")) {
+//         minuscules.checked = true;
+//     } else {
+//         minuscules.checked = false;
+//     }
+// }
+
 // detection des evenements
 rangeInput.addEventListener('input', actualiserValeur);
 btnGenerator.addEventListener('click', () => {
@@ -104,6 +153,9 @@ btnGenerator.addEventListener('click', () => {
 });
 copier.addEventListener('click', copierMotDePasse);
 masquer.addEventListener('click', afficherMasquer)
+
+
+
 
 
 
