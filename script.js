@@ -3,8 +3,7 @@ const uppercaseChars    = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lowercaseChars    = "abcdefghijklmnopqrstuvwxyz";
 const numberChars       = "0123456789";
 const symbolChars       = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-let masque = true;
-let motDePasseTemporaire;
+let estMasque = true;
 
 // Variables pour le localStorage
 let sauvegardeMinuscule = localStorage.getItem("minusculeStorage");
@@ -14,7 +13,7 @@ let sauvegardeSymbole   = localStorage.getItem("symboleStorage");
 
 
 // Selectionner les elements
-const btnGenerator      = document.querySelector("button");
+const btnGenerator      = document.querySelector("#bouton");
 const minuscules        = document.querySelector("#minuscules");
 const majuscules        = document.querySelector("#majuscules");
 const chiffres          = document.querySelector("#chiffres")
@@ -26,44 +25,41 @@ const textInput         = document.querySelector("#caracteresGeneres");
 const copier            = document.querySelector("#fa-copy");
 const masquer           = document.querySelector("#fa-eye");
 
-verifierSauvegarde();
 
-// Les fonctions
-function chainageETlocalStorage() {
+function chaineDeCaractere() {
     let chaines = "";
+    if (minuscules.checked) chaines += lowercaseChars;
+    if (majuscules.checked) chaines += uppercaseChars;
+    if (chiffres.checked)   chaines += numberChars;
+    if (symboles.checked)   chaines += symbolChars;
+    sauvegarderPreferences();
+    return chaines;
+}
+
+function sauvegarderPreferences() {
     if (minuscules.checked) {
-        chaines += lowercaseChars;
         localStorage.setItem("minusculeStorage", "true");
     } else {
         localStorage.setItem("minusculeStorage", "false");
     }
 
     if (majuscules.checked) {
-        chaines += uppercaseChars;
         localStorage.setItem("majusculeStorage", "true");
     } else {
         localStorage.setItem("majusculeStorage", "false");
     }
 
     if (chiffres.checked) {
-        chaines += numberChars;
         localStorage.setItem("chiffreStorage", "true");
     } else {
         localStorage.setItem("chiffreStorage", "false");
     }
 
     if (symboles.checked) {
-        chaines += symbolChars;
         localStorage.setItem("symboleStorage", "true");
     } else {
         localStorage.setItem("symboleStorage", "false");
     }
-
-    if (chaines === "") {
-        chaines += uppercaseChars + lowercaseChars + symbolChars + numberChars;
-        return chaines;
-    }
-    return chaines;
 }
 
 function actualiserValeur() {
@@ -73,17 +69,23 @@ function actualiserValeur() {
 }
 
 function generator() {
-    const nbr = actualiserValeur();
-    const chainesRecues = chainageETlocalStorage();
-    const tableau = new Uint32Array(nbr);
-    let string = "";
-    window.crypto.getRandomValues(tableau);
-    for (let i = 0; i < tableau.length; i++) {
-        const randomIndex = tableau[i] % chainesRecues.length;
-        string += chainesRecues[randomIndex];
+    const longueurMotDePasse = actualiserValeur();
+    const chainesRecues = chaineDeCaractere();
+    console.log(chainesRecues);
+    // Gestion chaine vide
+    if (chainesRecues === "") {
+        avertissement.style.display = "block";
+        textInput.style.borderColor = "red";
+        return;
     }
-    motDePasseTemporaire = string;
-    afficher(string);
+    const nombresAleatoires = new Uint32Array(longueurMotDePasse);
+    let motDePasse = "";
+    window.crypto.getRandomValues(nombresAleatoires);
+    for (let i = 0; i < nombresAleatoires.length; i++) {
+        const randomIndex = nombresAleatoires[i] % chainesRecues.length;
+        motDePasse += chainesRecues[randomIndex];
+    }
+    afficher(motDePasse);
     // indicateur(string);
 }
 
@@ -109,41 +111,33 @@ async function copierMotDePasse() {
 
 function afficherMasquer() {
     if (textInput.value === "") return;
-    if (masque) {
+    if (estMasque) {
         masquer.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
         masquer.style.cursor = 'pointer';
-        textInput.value = "*".repeat(textInput.value.length);
-        masque = false;
+        textInput.type = "password";
+        estMasque = false;
     } else {
         masquer.innerHTML = '<i class="fa-slab-press fa-regular fa-eye">';
-        textInput.value = motDePasseTemporaire;
+        textInput.type = "text";
         masquer.style.cursor = 'pointer';
-        masque = true;
+        estMasque = true;
     }
 }
 
 function verifierSauvegarde() {
-    sauvegardeMinuscule === "true" ? minuscules.checked = true : minuscules.checked = false;
-    sauvegardeMajuscule === "true" ? majuscules.checked = true : majuscules.checked = false;
-    sauvegardeChiffre   === "true" ?   chiffres.checked = true : chiffres.checked = false;
-    sauvegardeSymbole   === "true" ?   symboles.checked = true : symboles.checked = false;
+    if(sauvegardeMinuscule === null || sauvegardeMajuscule === null || sauvegardeChiffre === null || sauvegardeSymbole === null) return;
+    // sauvegardeMinuscule === "true" ? minuscules.checked = true : minuscules.checked = false;
+    // sauvegardeMajuscule === "true" ? majuscules.checked = true : majuscules.checked = false;
+    // sauvegardeChiffre   === "true" ?   chiffres.checked = true : chiffres.checked = false;
+    // sauvegardeSymbole   === "true" ?   symboles.checked = true : symboles.checked = false;
+    minuscules.checked = sauvegardeMinuscule === "true";
+    majuscules.checked = sauvegardeMajuscule === "true";
+    chiffres.checked = sauvegardeChiffre === "true";
+    symboles.checked = sauvegardeSymbole === "true";
 }
 
-// function sauvegarde() {
-//     if (localStorage.getItem("minusculeStorage") !== null) {
-//         conserverParamètres();
-//     } else {
-//         localStorage.setItem("minusculeStorage", true);
-//     }
-// }
-
-// function conserverParamètres() {
-//     if (localStorage.getItem("minusculeStorage")) {
-//         minuscules.checked = true;
-//     } else {
-//         minuscules.checked = false;
-//     }
-// }
+avertissement.style.display = "none";
+verifierSauvegarde();
 
 // detection des evenements
 rangeInput.addEventListener('input', actualiserValeur);
@@ -152,11 +146,4 @@ btnGenerator.addEventListener('click', () => {
     modifierIcone();
 });
 copier.addEventListener('click', copierMotDePasse);
-masquer.addEventListener('click', afficherMasquer)
-
-
-
-
-
-
-
+masquer.addEventListener('click', afficherMasquer);
